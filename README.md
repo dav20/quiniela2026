@@ -1,2 +1,2 @@
-# quiniela2026
-quiniela2026
+# quiniela-
+World Cup 2026 Prediction Pool
