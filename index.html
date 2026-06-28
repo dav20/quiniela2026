@@ -541,26 +541,20 @@
     }
 
     // Champion
-    async function loadChampionPrediction() {
-      var result = await supabase.from('predictions').select('*').eq('user_id', currentUser.id).eq('match_id', 'champion');
-      if (result.data && result.data[0]) {
-        document.getElementById('championSelect').value = result.data[0].champion || '';
-      }
-    }
+async function loadChampionPrediction() {
+  var result = await supabase.from('profiles').select('champion_pick').eq('id', currentUser.id).single();
+  if (result.data && result.data.champion_pick) {
+    document.getElementById('championSelect').value = result.data.champion_pick;
+  }
+}
 
-    document.getElementById('saveChampionBtn').addEventListener('click', async function() {
-      var champion = document.getElementById('championSelect').value;
-      if (!champion) { alert('Elegí un equipo'); return; }
-      var result = await supabase.from('predictions').upsert({
-        user_id: currentUser.id,
-        match_id: 'champion',
-        champion: champion,
-        home_score: 0,
-        away_score: 0
-      }, { onConflict: 'user_id,match_id' });
-      if (result.error) { alert('Error: ' + result.error.message); }
-      else { alert('Campeón guardado: ' + champion + ' 🏆'); }
-    });
+document.getElementById('saveChampionBtn').addEventListener('click', async function() {
+  var champion = document.getElementById('championSelect').value;
+  if (!champion) { alert('Elegí un equipo'); return; }
+  var result = await supabase.from('profiles').update({ champion_pick: champion }).eq('id', currentUser.id);
+  if (result.error) { alert('Error: ' + result.error.message); }
+  else { alert('Campeón guardado: ' + champion + ' 🏆'); }
+});
 
     // Leaderboard
     async function loadLeaderboard() {
